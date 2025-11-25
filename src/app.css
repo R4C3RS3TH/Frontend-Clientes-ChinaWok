@@ -1,0 +1,34 @@
+@import "tailwindcss";
+@plugin '@tailwindcss/forms';
+
+/* Estilos personalizados para Chinawok */
+:root {
+	--color-chinawok-red: #e03a3e;
+	--color-chinawok-green: #16a34a;
+	--color-chinawok-dark: #1f2937;
+}
+
+body {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+		sans-serif;
+}
+
+/* Mejoras de scroll suave */
+html {
+	scroll-behavior: smooth;
+}
+
+/* Utilidades para line-clamp */
+.line-clamp-1 {
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.line-clamp-2 {
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
