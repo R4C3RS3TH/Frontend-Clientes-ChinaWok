@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ProductoCard from '$lib/components/ProductoCard.svelte';
+	import MenuCard from '$lib/components/MenuCard.svelte';
 	import PromoCarousel from '$lib/components/PromoCarrusel.svelte';
 	import CategoriasCarousel from '$lib/components/CategoriasCarousel.svelte';
 	import type { PageData } from './$types';
@@ -9,7 +9,10 @@
 
 <svelte:head>
 	<title>Chinawok - Chifa a un clic</title>
-	<meta name="description" content="Disfruta de los mejores platos chifa peruanos. Pedidos online y delivery." />
+	<meta
+		name="description"
+		content="Disfruta de los mejores platos chifa peruanos. Pedidos online y delivery."
+	/>
 </svelte:head>
 
 <!-- Carrusel de Promociones -->
@@ -31,10 +34,12 @@
 
 		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 			{#each data.productos as plato}
-				<ProductoCard
+				<MenuCard
 					nombre={plato.nombre}
 					descripcion={plato.descripcion}
 					precio={plato.precio}
+					precioAnterior={plato.precioAnterior}
+					descuento={plato.descuento}
 					imagenUrl={plato.imagenUrl}
 				/>
 			{/each}

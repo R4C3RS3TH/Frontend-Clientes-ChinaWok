@@ -8,24 +8,32 @@ export const load: PageServerLoad = async () => {
             nombre: "Chijaukay Clásico",
             descripcion: "Trozos de pollo en salsa de soya y ajonjolí.",
             precio: 28.90,
-            // URL CAMBIADA
-            imagenUrl: "https://placehold.co/600x400/e03a3e/white?text=Chijaukay"
+            precioAnterior: 35.90,
+            descuento: 20,
+            imagenUrl: "https://www.chinawok.com.pe/media/catalog/product/cache/1/small_image/295x/040ec09b1e35df139433887a97daa66f/c/h/chijaukay-clasico-web_1.jpg"
         },
         {
             id: 2,
             nombre: "Tipakay Clásico",
             descripcion: "Pollo crujiente bañado en salsa agridulce.",
             precio: 28.90,
-            // URL CAMBIADA
-            imagenUrl: "https://placehold.co/600x400/e03a3e/white?text=Tipakay"
+            imagenUrl: "https://www.chinawok.com.pe/media/catalog/product/cache/1/small_image/295x/040ec09b1e35df139433887a97daa66f/t/i/tipakay-clasico-web_1.jpg"
         },
         {
             id: 3,
             nombre: "Aeropuerto Especial",
             descripcion: "Combinación de arroz chaufa y tallarín saltado.",
             precio: 32.50,
-            // URL CAMBIADA
-            imagenUrl: "https://placehold.co/600x400/e03a3e/white?text=Aeropuerto"
+            precioAnterior: 40.00,
+            descuento: 18,
+            imagenUrl: "https://www.chinawok.com.pe/media/catalog/product/cache/1/small_image/295x/040ec09b1e35df139433887a97daa66f/a/e/aeropuerto-especial-web_1.jpg"
+        },
+        {
+            id: 4,
+            nombre: "Tallarín Saltado de Pollo",
+            descripcion: "Trozos de pollo salteados con cebolla y tomate.",
+            precio: 29.90,
+            imagenUrl: "https://www.chinawok.com.pe/media/catalog/product/cache/1/small_image/295x/040ec09b1e35df139433887a97daa66f/t/a/tallarin-saltado-de-pollo-web_1.jpg"
         }
     ];
 
