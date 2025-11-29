@@ -3,8 +3,14 @@
 	import PromoCarousel from '$lib/components/PromoCarrusel.svelte';
 	import CategoriasCarousel from '$lib/components/CategoriasCarousel.svelte';
 	import type { PageData } from './$types';
+	import { productsStore } from '$lib/stores';
 
 	export let data: PageData;
+
+	// Initialize store with server data
+	$: if (data.productos) {
+		productsStore.set(data.productos);
+	}
 </script>
 
 <svelte:head>
@@ -33,7 +39,7 @@
 		</h2>
 
 		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-			{#each data.productos as plato}
+			{#each $productsStore as plato}
 				<MenuCard
 					nombre={plato.nombre}
 					descripcion={plato.descripcion}
