@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 import { goto } from '$app/navigation';
-import { productsStore, ordersStore, userProfileStore, toastStore } from './index';
+import { productsStore, ordersStore, userProfileStore, toastStore, inventoryStore } from './index';
 
 export const socketStore = writable<{ connected: boolean; error: any }>({
     connected: false,
@@ -11,7 +11,8 @@ export const socketStore = writable<{ connected: boolean; error: any }>({
 const storeMap: Record<string, any> = {
     'products_store': productsStore,
     'orders_store': ordersStore,
-    'user_profile': userProfileStore
+    'user_profile': userProfileStore,
+    'inventory_store': inventoryStore
 };
 
 export const handleNotification = (payload: any) => {

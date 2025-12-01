@@ -1,6 +1,7 @@
 <script lang="ts">
 	import MenuCard from '$lib/components/MenuCard.svelte';
 	import MenuFilter from '$lib/components/MenuFilter.svelte';
+	import { inventoryStore } from '$lib/stores';
 
 	let activeCategory = 'Todos';
 
@@ -23,7 +24,9 @@
 			descuento: 40,
 			imagenUrl:
 				'https://www.chinawok.com.pe/media/catalog/product/cache/1/small_image/295x/040ec09b1e35df139433887a97daa66f/c/h/chinaweek-para-dos-web_1.jpg',
-			category: 'Para compartir'
+			category: 'Para compartir',
+			sku: 'CW-2',
+			tenantId: 'SURCO_1'
 		},
 		{
 			id: 2,
@@ -34,7 +37,9 @@
 			descuento: 40,
 			imagenUrl:
 				'https://www.chinawok.com.pe/media/catalog/product/cache/1/small_image/295x/040ec09b1e35df139433887a97daa66f/c/h/chinaweek-sabor-al-wok-web_1.jpg',
-			category: 'Para compartir'
+			category: 'Para compartir',
+			sku: 'CW-WOK',
+			tenantId: 'SURCO_1'
 		},
 		{
 			id: 3,
@@ -45,7 +50,9 @@
 			descuento: 40,
 			imagenUrl:
 				'https://www.chinawok.com.pe/media/catalog/product/cache/1/small_image/295x/040ec	09b1e35df139433887a97daa66f/c/h/chinaweek-trio-encajate-web_1.jpg',
-			category: 'Familiares'
+			category: 'Familiares',
+			sku: 'CW-TRIO',
+			tenantId: 'SURCO_1'
 		},
 		{
 			id: 4,
@@ -57,7 +64,9 @@
 			descuento: 50,
 			imagenUrl:
 				'https://www.chinawok.com.pe/media/catalog/product/cache/1/small_image/295x/040ec09b1e35df139433887a97daa66f/c/h/chinaweek-banquetazo-web_1.jpg',
-			category: 'Familiares'
+			category: 'Familiares',
+			sku: 'CW-BANQ',
+			tenantId: 'SURCO_1'
 		},
 		{
 			id: 5,
@@ -67,7 +76,9 @@
 			precio: 49.9,
 			imagenUrl:
 				'https://www.chinawok.com.pe/media/catalog/product/cache/1/small_image/295x/040ec09b1e35df139433887a97daa66f/b/a/banquete-para-4-web_1.jpg',
-			category: 'Familiares'
+			category: 'Familiares',
+			sku: 'BANQ-4',
+			tenantId: 'SURCO_1'
 		},
 		{
 			id: 6,
@@ -76,7 +87,9 @@
 			precio: 21.9,
 			imagenUrl:
 				'https://www.chinawok.com.pe/media/catalog/product/cache/1/small_image/295x/040ec09b1e35df139433887a97daa66f/d/u/duo-clasico-al-wok-web_1.jpg',
-			category: 'Para compartir'
+			category: 'Para compartir',
+			sku: 'DUO-CLAS',
+			tenantId: 'SURCO_1'
 		},
 		{
 			id: 7,
@@ -85,7 +98,9 @@
 			precio: 59.9,
 			imagenUrl:
 				'https://www.chinawok.com.pe/media/catalog/product/cache/1/small_image/295x/040ec09b1e35df139433887a97daa66f/b/a/banquete-para-5-web_1.jpg',
-			category: 'Familiares'
+			category: 'Familiares',
+			sku: 'BANQ-5',
+			tenantId: 'SURCO_1'
 		},
 		{
 			id: 8,
@@ -94,7 +109,9 @@
 			precio: 19.9,
 			imagenUrl:
 				'https://www.chinawok.com.pe/media/catalog/product/cache/1/small_image/295x/040ec09b1e35df139433887a97daa66f/p/r/promo-duo-sopa-al-wok-web_1.jpg',
-			category: 'Para compartir'
+			category: 'Para compartir',
+			sku: 'DUO-SOPA',
+			tenantId: 'SURCO_1'
 		}
 	];
 
@@ -104,6 +121,14 @@
 
 	$: filteredProducts =
 		activeCategory === 'Todos' ? products : products.filter((p) => p.category === activeCategory);
+
+	// Helper to get stock from inventory store
+	function getStock(plato: any) {
+		if (!plato.sku || !plato.tenantId) return undefined;
+		const key = `${plato.tenantId}_${plato.sku}`;
+		const item = $inventoryStore[key];
+		return item?.stock?.N ? parseInt(item.stock.N) : undefined;
+	}
 </script>
 
 <div class="container mx-auto px-4 py-8">
@@ -147,6 +172,7 @@
 				precioAnterior={product.precioAnterior}
 				descuento={product.descuento}
 				imagenUrl={product.imagenUrl}
+				stock={getStock(product)}
 			/>
 		{/each}
 	</div>

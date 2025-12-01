@@ -5,6 +5,11 @@
 	export let precioAnterior: number | undefined = undefined;
 	export let descuento: number | undefined = undefined;
 	export let imagenUrl: string;
+	export let stock: number | undefined = undefined;
+
+	// Determine stock status
+	$: isOutOfStock = stock !== undefined && stock <= 0;
+	$: isLowStock = stock !== undefined && stock > 0 && stock <= 5;
 </script>
 
 <div
@@ -37,6 +42,21 @@
 				/>
 			</svg>
 		</button>
+
+		<!-- Stock Badge -->
+		{#if isOutOfStock}
+			<span
+				class="absolute top-2 left-2 rounded-full bg-red-600 px-2.5 py-1 text-xs font-bold text-white shadow-sm"
+			>
+				Agotado
+			</span>
+		{:else if isLowStock}
+			<span
+				class="absolute top-2 left-2 rounded-full bg-orange-500 px-2.5 py-1 text-xs font-bold text-white shadow-sm"
+			>
+				Últimas {stock} unidades
+			</span>
+		{/if}
 	</div>
 
 	<!-- Content -->
@@ -60,8 +80,11 @@
 			</div>
 
 			<button
-				class="flex h-8 w-8 items-center justify-center rounded-full bg-green-600 text-white transition-colors hover:bg-green-700"
+				class="flex h-8 w-8 items-center justify-center rounded-full transition-colors {isOutOfStock
+					? 'cursor-not-allowed bg-gray-300 text-gray-500'
+					: 'bg-green-600 text-white hover:bg-green-700'}"
 				aria-label="Agregar al carrito"
+				disabled={isOutOfStock}
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"

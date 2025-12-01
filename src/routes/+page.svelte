@@ -3,13 +3,21 @@
 	import PromoCarousel from '$lib/components/PromoCarrusel.svelte';
 	import CategoriasCarousel from '$lib/components/CategoriasCarousel.svelte';
 	import type { PageData } from './$types';
-	import { productsStore } from '$lib/stores';
+	import { productsStore, inventoryStore } from '$lib/stores';
 
 	export let data: PageData;
 
 	// Initialize store with server data
 	$: if (data.productos) {
 		productsStore.set(data.productos);
+	}
+
+	// Helper to get stock from inventory store
+	function getStock(plato: any) {
+		if (!plato.sku || !plato.tenantId) return undefined;
+		const key = `${plato.tenantId}_${plato.sku}`;
+		const item = $inventoryStore[key];
+		return item?.stock?.N ? parseInt(item.stock.N) : undefined;
 	}
 </script>
 
@@ -47,6 +55,7 @@
 					precioAnterior={plato.precioAnterior}
 					descuento={plato.descuento}
 					imagenUrl={plato.imagenUrl}
+					stock={getStock(plato)}
 				/>
 			{/each}
 		</div>

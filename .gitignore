@@ -1,5 +1,21 @@
 node_modules
 
+
+# Output
+.output
+.vercel
+.netlify
+.wrangler
+/.svelte-kit
+/build
+
+# OS
+.DS_Store
+Thumbs.db
+
+node_modules
+
+
 # Output
 .output
 .vercel
@@ -21,3 +37,6 @@ Thumbs.db
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Backend (reference only, do not commit)
+CW-backend-microservices-main/

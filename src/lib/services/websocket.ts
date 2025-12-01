@@ -3,7 +3,7 @@ export class WebSocketService {
     private socket: WebSocket | null = null;
     private url: string = '';
     private reconnectInterval: number = 5000;
-    private messageHandler: ((data: any) => void) | null = null;
+    private listeners: ((data: any) => void)[] = [];
     private isConnected: boolean = false;
 
     private constructor() { }
@@ -33,9 +33,13 @@ export class WebSocketService {
         this.socket.onmessage = (event) => {
             try {
                 const data = JSON.parse(event.data);
-                if (this.messageHandler) {
-                    this.messageHandler(data);
-                }
+                this.listeners.forEach(listener => {
+                    try {
+                        listener(data);
+                    } catch (err) {
+                        console.error('Error in WebSocket listener:', err);
+                    }
+                });
             } catch (error) {
                 console.error('Error parsing WebSocket message:', error);
             }
@@ -53,8 +57,19 @@ export class WebSocketService {
         };
     }
 
+    public addListener(listener: (data: any) => void): void {
+        this.listeners.push(listener);
+    }
+
+    public removeListener(listener: (data: any) => void): void {
+        this.listeners = this.listeners.filter(l => l !== listener);
+    }
+
+    /**
+     * @deprecated Use addListener instead
+     */
     public setMessageHandler(handler: (data: any) => void): void {
-        this.messageHandler = handler;
+        this.addListener(handler);
     }
 
     public send(data: any): void {
