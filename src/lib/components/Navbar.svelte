@@ -1,7 +1,9 @@
 <script lang="ts">
 	import TopNavbar from './TopNavbar.svelte';
 	import BottomNavbar from './BottomNavbar.svelte';
+
+	let carritoTotal = 0.0;
 </script>
 
-<TopNavbar />
+<TopNavbar {carritoTotal} />
 <BottomNavbar />

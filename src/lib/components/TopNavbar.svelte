@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { userProfileStore, isCartOpen, cartStore } from '$lib/stores';
+	import { userProfileStore, isCartOpen } from '$lib/stores';
 
-	$: carritoTotal = $cartStore.reduce((sum, item) => sum + item.precio * item.quantity, 0);
+	export let carritoTotal = 0.0;
 
 	let user: any = null;
 

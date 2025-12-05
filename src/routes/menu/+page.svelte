@@ -47,7 +47,7 @@
 			const stockVal = getValue(item.stock);
 
 			return {
-				id: sk || Math.random().toString(),
+				id: `${pk}_${sk}` || Math.random().toString(),
 				nombre: name || 'Producto sin nombre',
 				descripcion: description || '',
 				precio: price ? parseFloat(price) : 0,
@@ -126,7 +126,6 @@
 	<div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 		{#each filteredProducts as product (product.id)}
 			<MenuCard
-				id={product.id}
 				nombre={product.nombre}
 				descripcion={product.descripcion}
 				precio={product.precio}

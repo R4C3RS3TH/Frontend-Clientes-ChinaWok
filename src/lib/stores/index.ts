@@ -39,9 +39,3 @@ export const isRequestLoading = writable<boolean>(false);
 
 // Cart drawer state
 export const isCartOpen = writable<boolean>(false);
-
-export interface CartItem extends Product {
-    quantity: number;
-}
-
-export const cartStore = writable<CartItem[]>([]);
