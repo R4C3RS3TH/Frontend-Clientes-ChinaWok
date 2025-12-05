@@ -1,5 +1,14 @@
 <script lang="ts">
-	export let carritoTotal = 0.0;
+	import { userProfileStore, isCartOpen, cartStore } from '$lib/stores';
+
+	$: carritoTotal = $cartStore.reduce((sum, item) => sum + item.precio * item.quantity, 0);
+
+	let user: any = null;
+
+	userProfileStore.subscribe((value) => {
+		console.log('TopNavbar user update:', value);
+		user = value;
+	});
 </script>
 
 <div class="sticky top-0 z-50 border-b border-gray-200 bg-white shadow-sm">
@@ -95,29 +104,40 @@
 				</a>
 
 				<!-- Iniciar Sesión -->
-				<a href="/login" class="hidden items-center gap-2 text-gray-700 hover:text-red-600 lg:flex">
-					<svg
-						class="h-5 w-5 flex-shrink-0 text-gray-400"
-						fill="none"
-						stroke="currentColor"
-						viewBox="0 0 24 24"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-						/>
-					</svg>
-					<div class="flex flex-col leading-tight">
-						<span class="text-xs font-medium text-gray-500">Hola,</span>
-						<span class="text-sm font-bold text-green-600">INICIAR SESIÓN</span>
+				<div class="hidden items-center gap-2 text-gray-700 hover:text-red-600 lg:flex">
+					<!-- Login / User -->
+					<div class="flex items-center gap-2">
+						<svg
+							class="h-6 w-6 text-gray-400"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+							/>
+						</svg>
+						<div class="flex flex-col">
+							<span class="text-xs text-gray-500">Hola,</span>
+							{#if user}
+								<a href="/perfil" class="text-sm font-bold text-green-600 hover:text-green-500">
+									{user.name || user.email || 'Usuario'}
+								</a>
+							{:else}
+								<a href="/login" class="text-sm font-bold text-green-600 hover:text-green-500"
+									>INICIAR SESIÓN</a
+								>
+							{/if}
+						</div>
 					</div>
-				</a>
+				</div>
 
 				<!-- Carrito -->
-				<a
-					href="/carrito"
+				<button
+					on:click={() => isCartOpen.set(true)}
 					class="flex items-center gap-2 rounded-full bg-green-600 px-4 py-2 font-semibold whitespace-nowrap text-white transition-colors hover:bg-green-700"
 				>
 					<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -129,7 +149,7 @@
 						/>
 					</svg>
 					<span>S/ {carritoTotal.toFixed(2)}</span>
-				</a>
+				</button>
 			</div>
 		</div>
 	</div>

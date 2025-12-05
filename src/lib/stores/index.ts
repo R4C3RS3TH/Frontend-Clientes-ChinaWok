@@ -33,3 +33,15 @@ export const userProfileStore = writable<any>(null);
 
 // Toast store for notifications
 export const toastStore = writable<{ message: string; type: 'info' | 'success' | 'warning' | 'error' } | null>(null);
+
+// Global loading state for async requests
+export const isRequestLoading = writable<boolean>(false);
+
+// Cart drawer state
+export const isCartOpen = writable<boolean>(false);
+
+export interface CartItem extends Product {
+    quantity: number;
+}
+
+export const cartStore = writable<CartItem[]>([]);

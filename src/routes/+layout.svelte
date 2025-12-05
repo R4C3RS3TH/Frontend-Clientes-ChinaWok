@@ -9,6 +9,8 @@
 	import { handleNotification } from '$lib/stores/socket';
 	import { PUBLIC_WEBSOCKET_URL } from '$env/static/public';
 
+	import CartDrawer from '$lib/components/CartDrawer.svelte';
+
 	onMount(() => {
 		const wsService = WebSocketService.getInstance();
 		wsService.setMessageHandler(handleNotification);
@@ -33,6 +35,7 @@
 <Navbar />
 
 <Toast />
+<CartDrawer />
 
 <main>
 	<slot />

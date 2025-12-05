@@ -1,4 +1,8 @@
 <script lang="ts">
+	import { AuthService } from '$lib/services/auth';
+	import { onMount } from 'svelte';
+	import { toastStore, isRequestLoading } from '$lib/stores';
+
 	let showPassword = false;
 	let isLogin = true; // true = login, false = registro
 
@@ -9,18 +13,61 @@
 	let registerConfirmPassword = '';
 	let registerName = '';
 
+	let authService: AuthService;
+
+	onMount(() => {
+		authService = AuthService.getInstance();
+		authService.initialize();
+	});
+
 	const togglePassword = () => {
 		showPassword = !showPassword;
 	};
 
+	const validatePassword = (password: string): boolean => {
+		const minLength = 8;
+		const hasUpperCase = /[A-Z]/.test(password);
+		const hasNumber = /[0-9]/.test(password);
+		const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+		if (password.length < minLength) {
+			toastStore.set({ message: 'La contraseña debe tener al menos 8 caracteres.', type: 'error' });
+			return false;
+		}
+		if (!hasUpperCase) {
+			toastStore.set({
+				message: 'La contraseña debe tener al menos una letra mayúscula.',
+				type: 'error'
+			});
+			return false;
+		}
+		if (!hasNumber) {
+			toastStore.set({ message: 'La contraseña debe tener al menos un número.', type: 'error' });
+			return false;
+		}
+		if (!hasSpecialChar) {
+			toastStore.set({
+				message: 'La contraseña debe tener al menos un carácter especial (!@#$%^&*).',
+				type: 'error'
+			});
+			return false;
+		}
+		return true;
+	};
+
 	const handleLogin = () => {
-		// Aquí iría la lógica de login
-		console.log('Login:', { email: loginEmail, password: loginPassword });
+		if (!loginEmail || !loginPassword) return;
+
+		isRequestLoading.set(true);
+		authService.login(loginEmail, loginPassword);
 	};
 
 	const handleRegister = () => {
-		// Aquí iría la lógica de registro
-		console.log('Register:', {
+		if (!validatePassword(registerPassword)) {
+			return;
+		}
+
+		authService.register({
 			name: registerName,
 			email: registerEmail,
 			password: registerPassword
@@ -118,9 +165,36 @@
 				<!-- Submit Button -->
 				<button
 					type="submit"
-					class="w-full rounded-lg bg-green-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-green-700"
+					disabled={$isRequestLoading}
+					class="w-full rounded-lg bg-green-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
 				>
-					Iniciar sesión
+					{#if $isRequestLoading}
+						<span class="flex items-center justify-center gap-2">
+							<svg
+								class="h-5 w-5 animate-spin text-white"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+							>
+								<circle
+									class="opacity-25"
+									cx="12"
+									cy="12"
+									r="10"
+									stroke="currentColor"
+									stroke-width="4"
+								></circle>
+								<path
+									class="opacity-75"
+									fill="currentColor"
+									d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+								></path>
+							</svg>
+							Iniciando sesión...
+						</span>
+					{:else}
+						Iniciar sesión
+					{/if}
 				</button>
 			</form>
 		</div>

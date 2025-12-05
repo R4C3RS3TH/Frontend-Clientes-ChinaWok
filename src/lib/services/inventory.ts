@@ -4,7 +4,7 @@ import type { InventoryItem } from '$lib/stores';
 
 /**
  * Inventory WebSocket Service
- * Connects to the MS_INVENTORY_URL and requests product inventory data
+ * Connects to the shared WebSocket and requests product inventory data
  */
 export class InventoryService {
     private static instance: InventoryService;
@@ -44,7 +44,7 @@ export class InventoryService {
      * Request inventory list from backend
      * Sends a "Productos.Listar" event to the WebSocket
      */
-    public requestInventory(productType: string = 'PLATO_FONDO', limit: number = 20): void {
+    public requestInventory(productType: string = 'PLATO', limit: number = 20): void {
         const message = {
             action: 'Productos.Listar',
             data: {
@@ -52,6 +52,12 @@ export class InventoryService {
                 limit: limit
             }
         };
+
+        if (!this.wsService['socket'] || this.wsService['socket'].readyState !== WebSocket.OPEN) {
+            console.log('WebSocket not ready, retrying inventory request in 1s...');
+            setTimeout(() => this.requestInventory(productType, limit), 1000);
+            return;
+        }
 
         console.log('Requesting inventory:', message);
         this.wsService.send(message);
@@ -64,19 +70,37 @@ export class InventoryService {
         console.log('Inventory message received:', data);
 
         // Check if this is an inventory update
-        if (data.Detail && data.Detail.data && data.Detail.data.products) {
-            const products = data.Detail.data.products;
+        // Handle both wrapped (Detail.data) and unwrapped (data) formats
+        const payloadData = data.data || (data.Detail && data.Detail.data);
+
+        if (payloadData && payloadData.products) {
+            const products = payloadData.products;
 
             // Convert array to keyed object for easy lookup
             const inventoryMap: Record<string, InventoryItem> = {};
 
-            products.forEach((item: InventoryItem) => {
-                const key = `${item.pk.S}_${item.sk.S}`;
+            // Debug: Log the first item to understand the structure
+            if (products.length > 0) {
+                console.log('First product structure:', JSON.stringify(products[0], null, 2));
+            }
+
+            products.forEach((item: any) => {
+                // Try to determine PK and SK safely
+                // Backend seems to use snake_case: tenant_id, producto_id
+                const pk = item.pk?.S || item.pk || item.tenant_id?.S || item.tenant_id || item.tenantId || item.PK?.S || item.PK || 'unknown_pk';
+                const sk = item.sk?.S || item.sk || item.producto_id?.S || item.producto_id || item.sku || item.SK?.S || item.SK || 'unknown_sk';
+
+                const key = `${pk}_${sk}`;
                 inventoryMap[key] = item;
             });
 
-            // Update the inventory store
-            inventoryStore.set(inventoryMap);
+            // Update the inventory store by merging new items with existing ones
+            inventoryStore.update(currentInventory => {
+                return {
+                    ...currentInventory,
+                    ...inventoryMap
+                };
+            });
 
             console.log(`Inventory updated with ${products.length} items`);
         }
